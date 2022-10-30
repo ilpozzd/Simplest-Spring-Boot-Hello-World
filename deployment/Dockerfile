@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11-alpine
+FROM --platform=x86_64 eclipse-temurin:11-alpine
 
 RUN addgroup -S spring && adduser -S spring -G spring 
 USER spring:spring  
