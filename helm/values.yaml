@@ -1,0 +1,16 @@
+imageCredentials:
+  registry: "ghcr.io"
+  username: ""
+  password: ""
+  email: ""
+
+image:
+  repository: "ghcr.io/ilpozzd/simplest-spring-boot-hello-world"
+  tag: ""
+
+replicas: 1
+servicePort: 80
+containerPort: 8080
+
+actuatorPaths:
+  - "health"

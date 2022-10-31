@@ -1,0 +1,39 @@
+{{- $port := .Values.containerPort }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name | quote }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name | quote }}
+    spec:
+      imagePullSecrets:
+        - name: "{{ .Release.Name }}-registry-secret"
+      containers:
+      - name: {{ .Release.Name | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ $port }}
+        startupProbe:
+          httpGet:
+            path: /actuator
+            port: {{ $port }}
+          failureThreshold: 30
+          periodSeconds: 10
+        {{- range $path := .Values.actuatorPaths }}
+        livenessProbe:
+          httpGet:
+            path: "/actuator/{{ $path }}"
+            port: {{ $port }}
+          failureThreshold: 1
+          periodSeconds: 10
+        {{- end -}}
